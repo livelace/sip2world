@@ -1,0 +1,7 @@
+<extension name="eavesdrop" >
+   <condition field="destination_number" expression="^\*33(\d{2,7})$" >
+       <action application="answer" />
+       <action application="set" data="pin_number=72132479" />
+       <action application="lua" data="eavesdrop.lua $1" />
+   </condition>
+</extension>

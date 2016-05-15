@@ -1,0 +1,25 @@
+---
+
+- name: Delete old APT lists
+  command: "rm -rf /var/lib/apt/lists/*"
+
+- name: Clean APT cache
+  command: "apt-get clean all" 
+
+- name: Update system
+  apt: upgrade=dist update_cache=yes 
+
+- name: Install third party software
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - dstat
+    - curl
+    - git
+    - htop
+    - nmap
+    - sudo
+    - vim 
+    - wget
+
+- name: VIM syntax on
+  lineinfile: dest=/etc/vim/vimrc regexp='^"syntax on' line='syntax on'

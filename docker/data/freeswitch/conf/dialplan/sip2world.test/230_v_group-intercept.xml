@@ -1,0 +1,6 @@
+<extension name="group-intercept" >
+   <condition field="destination_number" expression="^\*8$" >
+       <action application="answer" />
+       <action application="lua" data="intercept_group.lua" />
+   </condition>
+</extension>

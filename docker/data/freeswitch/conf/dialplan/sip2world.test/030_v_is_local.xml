@@ -1,0 +1,5 @@
+<extension name="is_local" continue="true">
+   <condition >
+       <action application="lua" data="app.lua is_local" />
+   </condition>
+</extension>

@@ -1,0 +1,16 @@
+---
+- name: Install and configure sip2world bundle 
+  hosts: sip2world
+  remote_user: root
+
+  roles:
+    - apache
+    - baresip
+    - cdr-pusher
+    - cdr-stats
+    - freeswitch
+    - fusionpbx
+    - memcached
+    - postgresql
+    - redis
+    - skype

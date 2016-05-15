@@ -1,0 +1,72 @@
+---
+
+- name: Install Postgresql and dependencies
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - postgresql
+    - python-psycopg2
+
+- name: Bind listening address to 0.0.0.0
+  lineinfile: dest=/etc/postgresql/9.4/main/postgresql.conf regexp="#listen_addresses" line="listen_addresses='*'"
+
+- name: Create database "freeswitch"
+  become: yes
+  become_user: postgres
+  postgresql_db: name=freeswitch
+                 encoding='UTF-8'
+                 lc_collate='en_US.UTF-8'
+                 lc_ctype='en_US.UTF-8'
+                 template='template0'
+
+- name: Create database "fusionpbx"
+  become: yes
+  become_user: postgres
+  postgresql_db: name=fusionpbx
+                 encoding='UTF-8'
+                 lc_collate='en_US.UTF-8'
+                 lc_ctype='en_US.UTF-8'
+                 template='template0'
+
+- name: Create database "cdrstats"
+  become: yes
+  become_user: postgres
+  postgresql_db: name=cdrstats
+                 encoding='UTF-8'
+                 lc_collate='en_US.UTF-8'
+                 lc_ctype='en_US.UTF-8'
+                 template='template0'
+
+- name: Create database "cdrstats-pusher"
+  become: yes
+  become_user: postgres
+  postgresql_db: name=cdrstats-pusher
+                 encoding='UTF-8'
+                 lc_collate='en_US.UTF-8'
+                 lc_ctype='en_US.UTF-8'
+                 template='template0'
+
+- name: Create database user "freeswitch"
+  become: yes
+  become_user: postgres
+  postgresql_user: db=freeswitch name=freeswitch password=freeswitch priv=ALL state=present
+
+- name: Create database user "fusionpbx"
+  become: yes
+  become_user: postgres
+  postgresql_user: db=fusionpbx name=fusionpbx password=fusionpbx priv=ALL state=present
+
+- name: Create database user "cdrstats"
+  become: yes
+  become_user: postgres
+  postgresql_user: db=cdrstats name=cdrstats password=cdrstats priv=ALL state=present
+
+- name: Grant ALL privileges on "cdrstats-pusher" to "cdrstats"
+  become: yes
+  become_user: postgres
+  postgresql_privs: db=cdrstats-pusher privs=ALL type=database role=cdrstats 
+
+- name: Create superuser "admin"
+  become: yes
+  become_user: postgres
+  postgresql_user: db=postgres name=admin password=admin priv=ALL role_attr_flags=CREATEDB,CREATEROLE,SUPERUSER  state=present
+

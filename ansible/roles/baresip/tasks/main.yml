@@ -1,0 +1,67 @@
+---
+
+- name: Install Baresip dependencies
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - libasound2-dev
+    - libaubio-dev
+    - libavcodec-dev
+    - libavdevice-dev
+    - libavformat-dev
+    - libc6-dev
+    - libcairo2-dev
+    - libgsm1-dev
+    - libgstreamer1.0-dev
+    - libmpg123-dev
+    - libopencore-amrnb-dev
+    - libopus-dev
+    - libsdl1.2-dev
+    - libsdl2-dev
+    - libspandsp-dev
+    - libspeex-dev
+    - libspeexdsp-dev
+    - libsrtp0-dev
+    - libswscale-dev
+    - libv4l-dev
+    - libvpx-dev
+    - libx11-dev
+    - oss4-dev
+
+- name: Fetch and extract Re
+  unarchive: "src={{ re_url }} dest=/opt copy=no"
+
+- name: Build and install Re
+  shell: "make && make install chdir=/opt/re-{{ re_version }}"
+
+- name: Update ldconfig
+  shell: "echo /usr/local/lib > /etc/ld.so.conf.d/re.conf && ldconfig"
+
+- name: Fetch and extract Rem
+  unarchive: "src={{ rem_url }} dest=/opt copy=no"
+
+- name: Build and install Rem
+  shell: "make && make install chdir=/opt/rem-{{ rem_version }}"
+
+- name: Fetch and extract Baresip 
+  unarchive: "src={{ baresip_url }} dest=/opt copy=no"
+
+- name: Build and install Baresip
+  shell: "make && make install chdir=/opt/baresip-{{ baresip_version }}"
+
+- name: Add user "baresip"
+  user: name=baresip group=video
+
+- name: Copy account data to /home/baresip
+  copy: "src={{ item }} dest=/home/baresip"
+  with_items:
+    - accounts
+    - config
+    - contacts
+
+- name: Copy systemd service file
+  copy: "src=baresip.service dest=/etc/systemd/system/baresip.service mode=0644"
+  notify:
+    - reload systemd 
+
+- name: Enable and start baresip service
+  service: name=baresip enabled=yes state=started

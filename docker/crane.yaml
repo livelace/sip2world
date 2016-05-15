@@ -1,0 +1,74 @@
+containers:
+  apache:
+    image: livelace/sip2world-apache:2.4.7
+    run:
+      volume: ["data/freeswitch:/opt/freeswitch", "data/fusionpbx:/var/www/html/fusionpbx"]
+      link: ["freeswitch:freeswitch", "postgresql:postgresql"]
+      publish: ["8080:80/tcp", "8443:443/tcp"]
+      detach: true
+
+  baresip:
+    image: livelace/sip2world-baresip:0.4.12
+    run:
+      link: ["freeswitch:freeswitch"]
+      publish: ["1111:1111/tcp"]
+      #device: ["/dev/video0:/dev/video0:rwm"]
+      detach: true
+
+  freeswitch:
+    image: livelace/sip2world-freeswitch:1.4.18
+    run:
+      volume: ["data/freeswitch/conf:/opt/freeswitch/conf", "data/freeswitch/db:/opt/freeswitch/db",
+              "data/freeswitch/recordings:/opt/freeswitch/recordings", "data/freeswitch/scripts:/opt/freeswitch/scripts",
+              "data/freeswitch/storage:/opt/freeswitch/storage", "data/freeswitch/mod:/mod"]
+      link: ["memcached:memcached", "postgresql:postgresql"]
+      publish: ["5060:5060/udp", "5061:5061/tcp", "8021:8021/tcp"]
+      #device: ["/dev/ttyUSB0:/dev/ttyUSB0:rwm","/dev/ttyUSB1:/dev/ttyUSB1:rwm","/dev/ttyUSB2:/dev/ttyUSB2:rwm"]
+      detach: true
+
+  memcached:
+    image: memcached    
+    run:
+      publish: ["11211:11211"]
+      detach: true
+
+  postgresql:
+    image: livelace/sip2world-postgresql:9.4
+    run:
+      volume: ["data/postgresql:/var/lib/postgresql"]
+      publish: ["15432:5432/tcp"]
+      detach: true
+
+  redis:
+    image: redis
+    run:
+      publish: ["16379:6379/tcp"]
+      detach: true
+      
+  cdrstats3:
+    image: livelace/sip2world-cdr-stats:3.0.0
+    run:
+      link: ["postgresql:postgresql","redis:redis"]
+      publish: ["8000:8000/tcp"]
+      detach: true
+
+  cdrstats3pusher:
+    image: livelace/sip2world-cdr-stats-pusher:3.0.0
+    run:
+      volume: ["data/freeswitch/db:/opt/freeswitch/db"]
+      link: ["postgresql:postgresql"]
+      detach: true
+
+  cdrstats3djcelery:
+    image: livelace/sip2world-cdr-stats-djcelery:3.0.0
+    run:
+      link: ["postgresql:postgresql","redis:redis"]
+      detach: true
+
+  cdrstats3djcelerybeat:
+    image: livelace/sip2world-cdr-stats-djcelerybeat:3.0.0
+    run:
+      link: ["postgresql:postgresql","redis:redis"]
+      detach: true
+    
+    

@@ -1,0 +1,9 @@
+<extension name="vmain" >
+   <condition field="destination_number" expression="^vmain$|^\*4000$|^\*98$" >
+       <action application="answer" />
+       <action application="sleep" data="1000" />
+       <action application="set" data="voicemail_action=check" />
+       <action application="set" data="voicemail_profile=default" />
+       <action application="lua" data="app.lua voicemail" />
+   </condition>
+</extension>

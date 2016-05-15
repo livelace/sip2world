@@ -1,0 +1,5 @@
+<extension name="webcam" >
+   <condition field="destination_number" expression="^webcam$" >
+       <action application="bridge" data="user/webcam" />
+   </condition>
+</extension>

@@ -1,0 +1,102 @@
+---
+- name: Add Freeswitch repository key
+  apt_key: url=https://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub state=present
+
+- name: Add Freeswitch repository
+  apt_repository: repo='deb http://files.freeswitch.org/repo/deb/freeswitch-1.6/ jessie main' state=present
+
+- name: Install Freeswitch dependencies 
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - autoconf
+    - bison
+    - build-essential
+    - freeswitch-video-deps-most
+    - gcj-4.8-jdk
+    - gsm-utils
+    - javacc
+    - ladspa-sdk
+    - libasound2-dev
+    - libcurl4-openssl-dev
+    - libdb-dev
+    - libedit-dev
+    - libgdbm-dev
+    - libgsmme-dev
+    - libh323plus-dev
+    - libjpeg-dev
+    - libldns-dev
+    - libmemcached-dev
+    - libmono-2.0-dev
+    - libncurses5-dev
+    - libopal-dev
+    - libosptk3-dev
+    - libpcre3-dev
+    - libperl-dev
+    - libpq-dev
+    - libpt-dev
+    - libsnmp-dev
+    - libspeex-dev
+    - libspeexdsp-dev
+    - libsqlite3-dev
+    - libtool
+    - libvlc-dev
+    - libvpx-dev
+    - libx11-dev
+    - libxau-dev
+    - libxcb1-dev
+    - libxdmcp-dev
+    - libyaml-dev
+    - mono-mcs
+    - odbc-postgresql
+    - openjdk-7-jdk
+    - pkg-config
+    - portaudio19-dev
+    - python-dev
+    - usb-modeswitch
+    - usb-modeswitch-data
+    - uuid-dev
+    - x11proto-core-dev
+    - x11proto-input-dev
+    - x11proto-kb-dev
+    - xtrans-dev
+
+- name: "Fetch and extract Freeswitch distribution: {{ freeswitch_version }}"
+  unarchive: "src={{ freeswitch_url }} dest=/opt copy=no" 
+
+- name: Copy modules.conf to source 
+  copy: "src=modules.conf dest=/opt/freeswitch-{{ freeswitch_version }} mode=0644"
+
+- name: Configure source
+  shell: "./configure --enable-core-pgsql-support --prefix=/opt/freeswitch chdir=/opt/freeswitch-{{ freeswitch_version }}"
+
+- name: Build and install libctb
+  shell: "make DEBUG=0 GPIB=0 && make DEBUG=0 GPIB=0 install chdir=/opt/freeswitch-{{ freeswitch_version }}/src/mod/endpoints/mod_gsmopen/libctb-0.16/build"
+
+- name: Update ldconfig
+  shell: "echo /usr/local/lib > /etc/ld.so.conf.d/libctb.conf && ldconfig"
+
+- name: Build Freeswitch core
+  shell: "make -j {{ freeswitch_make_jobs }}  chdir=/opt/freeswitch-{{ freeswitch_version }}"
+
+- name: Install Freeswitch core
+  shell: "make install chdir=/opt/freeswitch-{{ freeswitch_version }}"
+
+- name: Install additional sounds 
+  shell: "make cd-sounds-install && make cd-moh-install && make uhd-sounds-install && make uhd-moh-install && make hd-sounds-install && make hd-moh-install && make sounds-install && make moh-install chdir=/opt/freeswitch-{{ freeswitch_version }}"
+
+- name: Set owner to /opt/freeswitch as www-data user
+  file: path=/opt/freeswitch state=directory owner=www-data group=www-data recurse=yes mode=0775
+
+- name: Copy cdr_sqlite.conf.xml
+  copy: "src=cdr_sqlite.conf.xml dest=/opt/freeswitch/etc/freeswitch/autoload_configs/cdr_sqlite.conf.xml owner=www-data group=www-data mode=0644"
+
+- name: Create symlink to fs_cli
+  file: src=/opt/freeswitch/bin/fs_cli dest=/usr/bin/fs_cli state=link
+
+- name: Copy systemd service file
+  copy: "src=freeswitch-systemd.freeswitch.service dest=/etc/systemd/system/freeswitch.service mode=0644"
+  notify:
+    - reload systemd
+
+- name: Enable and start Freeswitch service
+  service: name=freeswitch enabled=yes state=started

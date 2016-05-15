@@ -1,0 +1,13 @@
+[Unit]
+Description=CDR-stats django celery beat
+Requires=postgresql.service
+Wants=redis-server.service
+After=postgresql.service
+
+[Service]
+User=cdrstats
+WorkingDirectory=/opt/cdr-stats
+ExecStart=/usr/bin/python /opt/cdr-stats/cdr_stats/manage.py celery beat -l info --pidfile /tmp/1.pid
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,108 @@
+
+# CDR FETCHING - SOURCE
+# ---------------------
+
+# storage_source_type: DB backend type where CDRs are stored
+# (accepted values: "sqlite3" and "mysql")
+storage_source: "sqlite3"
+
+# db_file: specify the database path and name
+# for test we need db_file to be set at ./sqlitedb/cdr.db
+db_file: "/opt/freeswitch/db/cdr.db"
+# db_file: "/usr/local/freeswitch/cdr.db"
+# db_file: "/opt/app/cdr-pusher/sqlitedb/cdr.db"
+
+# Database DNS
+# Use this with Mysql
+db_dns: ""
+
+# db_table: the DB table name
+db_table: "cdr"
+
+# db_flag_field defines the table field that will be added/used to track the import
+db_flag_field: "flag_imported"
+
+# max_fetch_batch: Max amoun to CDR to push in batch (value: 1-1000)
+max_fetch_batch: 100
+
+# heartbeat: Frequency of check for new CDRs in seconds
+heartbeat: 1
+
+# cdr_fields is list of fields that will be fetched (from SQLite3) and pushed (to PostgreSQL)
+# - if dest_field is callid, it will be used in riak as key to insert
+cdr_fields:
+    - orig_field: uuid
+      dest_field: callid
+      type_field: string
+    - orig_field: caller_id_name
+      dest_field: caller_id_name
+      type_field: string
+    - orig_field: caller_id_number
+      dest_field: caller_id_number
+      type_field: string
+    - orig_field: destination_number
+      dest_field: destination_number
+      type_field: string
+    - orig_field: hangup_cause_q850
+      dest_field: hangup_cause_id
+      type_field: int
+    - orig_field: duration
+      dest_field: duration
+      type_field: int
+    - orig_field: billsec
+      dest_field: billsec
+      type_field: int
+    # - orig_field: account_code
+    #   dest_field: accountcode
+    #   type_field: string
+    - orig_field: "datetime(start_stamp)"
+      dest_field: starting_date
+      type_field: date
+    # - orig_field: "strftime('%s', answer_stamp)" # convert to epoch
+    - orig_field: "datetime(answer_stamp)"
+      dest_field: extradata
+      type_field: jsonb
+    - orig_field: "datetime(end_stamp)"
+      dest_field: extradata
+      type_field: jsonb
+
+
+# CDR PUSHING - DESTINATION
+# -------------------------
+
+# storage_dest_type defines where push the CDRs (accepted values: "postgres" or "riak")
+storage_destination: "postgres"
+
+# Used when storage_dest_type = postgres
+# datasourcename: connect string to connect to PostgreSQL used by sql.Open
+pg_datasourcename: "user=cdrstats3 password=cdrstats3 host=postgresql port=5432 dbname=cdrstats3-pusher sslmode=disable"
+
+# Used when storage_dest_type = postgres
+# pg_store_table: the DB table name to store CDRs in Postgres
+table_destination: "cdr_import"
+
+# Used when storage_dest_type = riak
+# riak_connect: connect string to connect to Riak used by riak.ConnectClient
+#riak_connect: "127.0.0.1:8087"
+
+# Used when storage_dest_type = postgres
+# riak_bucket: the bucket name to store CDRs in Riak
+#riak_bucket: "cdr_import"
+
+# switch_ip: leave this empty to default to your external IP (accepted value: ""|"your IP")
+switch_ip: ""
+
+# cdr_source_type: write the id of the cdr sources type
+# (accepted value: unknown: 0, csv: 1, api: 2, freeswitch: 3, asterisk: 4, yate: 5, kamailio: 6, opensips: 7, sipwise: 8, veraz: 9)
+cdr_source_type: 3
+
+
+# SETTINGS FOR FAKE GENERATOR
+# ---------------------------
+
+# fake_cdr will populate the SQLite database with fake CDRs for test purpose (accepted value: "yes|no")
+fake_cdr: "no"
+
+# fake_amount_cdr is the amount of CDRs to generate into the SQLite database for test purpose (value: 1-1000)
+# this amount of CDRs will be created every second
+fake_amount_cdr: 1000

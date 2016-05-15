@@ -1,0 +1,98 @@
+---
+
+- name: Install CDR-stats dependencies
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - build-essential
+    - git
+    - libgraphviz-dev
+    - libpq-dev
+    - mercurial
+    - nodejs
+    - nodejs-legacy
+    - npm
+    - pkg-config
+    - python-dev
+    - python-setuptools
+    - unzip
+
+- name: Install pip
+  command: easy_install pip
+
+- name: Clone CDR-stats repository
+  git: "repo={{ cdrstats_url }} dest=/opt/cdr-stats force=yes"
+
+- name: Add group cdrstats
+  group: name=cdrstats state=present
+
+- name: Add user cdrstats
+  user: name=cdrstats group=cdrstats
+
+- name: Make directory /var/log/cdr-stats
+  file: path=/var/log/cdr-stats state=directory owner=cdrstats group=cdrstats mode=0755
+
+- name: Copy bowerrc
+  copy: "src=bowerrc dest=/root/.bowerrc mode=0644"
+
+- name: Copy settings.py"
+  copy: "src=settings.py dest=/opt/cdr-stats/cdr_stats/cdr_stats/settings.py mode=0644"
+
+- name: Copy settings_local.py
+  copy: "src=settings_local.py dest=/opt/cdr-stats/cdr_stats/cdr_stats/settings_local.py mode=0644"
+
+- name: Include pandas
+  lineinfile: dest=/opt/cdr-stats/requirements/all.txt line="pandas"
+
+- name: Exclude rudolf2
+  lineinfile: dest=/opt/cdr-stats/requirements/test.txt regexp="^rudolf2" line="#rudolf2" 
+
+- name: Install python dependencies
+  pip: requirements=/opt/cdr-stats/requirements/all.txt 
+
+- name: Install bower
+  command: npm install -g bower
+
+- name: Symlink /usr/local/bin/bower to /usr/bin/bower
+  file: src=/usr/local/bin/bower dest=/usr/bin/bower state=link
+
+- name: Install bower packages
+  command: python /opt/cdr-stats/cdr_stats/manage.py bower_install
+
+- name: Create CDR-stats database schema
+  command: python /opt/cdr-stats/cdr_stats/manage.py syncdb --noinput
+
+- name: Fetch CDR-stats media files 
+  command: python /opt/cdr-stats/cdr_stats/manage.py collectstatic --noinput
+
+- name: Make directory /var/log/cdr-stats
+  file: path=/var/log/cdr-stats state=directory owner=cdrstats group=cdrstats mode=0755
+
+- name: Change owner for /opt/cdr-stats
+  file: path={{ item }} owner=cdrstats group=cdrstats recurse=yes
+  with_items:
+    - /var/log/cdr-stats
+    - /opt/cdr-stats
+
+- name: Copy cdr-stats.service 
+  copy: "src=cdr-stats.service dest=/etc/systemd/system/cdr-stats.service mode=0644"
+  notify:
+    - reload systemd
+
+- name: Copy cdr-stats-djcelery.service
+  copy: "src=cdr-stats-djcelery.service dest=/etc/systemd/system/cdr-stats-djcelery.service mode=0644"
+  notify:
+    - reload systemd
+
+- name: Copy cdr-stats-djcelery-beat.service
+  copy: "src=cdr-stats-djcelery-beat.service dest=/etc/systemd/system/cdr-stats-djcelery-beat.service mode=0644"
+  notify:
+    - reload systemd
+
+- name: Enable and start cdr-stats.service
+  service: name=cdr-stats enabled=yes state=started
+
+- name: Enable and start cdr-stats-djcelery.service
+  service: name=cdr-stats-djcelery enabled=yes state=started
+
+- name: Enable and start cdr-stats-djcelery-beat.service
+  service: name=cdr-stats-djcelery-beat enabled=yes state=started

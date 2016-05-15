@@ -1,0 +1,143 @@
+# Based on examples configurations like:
+# http://www.voip-info.org/wiki/view/Aastra+9133i+Configuration
+
+# Reference documenation is at:
+# http://www.aastra.com/cps/rde/xchg/SID-3D8CCB6A-995D8770/04/hs.xsl/33977.htm#dl_instructions
+# PDF link is labeled "9143i, 9480i, 9480i CT and 67xxi Series SIP Phone Administrators Guide"
+
+# Direct link to admin guide PDF as of 2010-08-18 is:
+# ftp://216.94.98.106/Downloads/Admin_Guides/IP%20Phone%20Admin%20Guide_2.6.0_41-001160-05_REV00_IPP_AG_1005.pdf
+
+
+# #################
+# Network Settings
+# #################
+# commented out because DHCP server normally sets these values
+
+# === DHCP ===
+#dhcp: 1
+
+# === IP network settings ===
+#subnet mask: 255.255.255.0
+#default gateway: 192.168.1.1
+#dns1: 192.168.1.1
+#dns2: 205.210.42.205 # cache1.dnsresolvers.com
+
+# === NTP time server settings ===
+#time server disabled: 0
+#time server1: {$domain_name}
+#time server2: pool.ntp.org
+#time server3:
+
+
+# #################
+# Firmware Server
+# #################
+
+# phone looks for firwmare in <phone model>.st file, e.g. "53i.st" or "57iCT.st"
+#firmware server: http://{$domain_name}{$project_path}/provisioning/aastra/firmware
+
+
+# #################
+# Configuration and Firmware Downloads for auto resync
+# #################
+
+# phone looks for configuration files in aastra.cfg followed by <MAC>.cfg, e.g. "00085D1610DE.cfg"
+# leave HTTP path blank for http://{$domain_name}{$project_path}/aastra.cfg and http://{$domain_name}{$project_path}/<MAC>.cfg
+download protocol: HTTP                            # HTTPS, TFTP and FTP also supported
+http server: {$domain_name}
+#http port: 80  # default is 80
+#http path: provisioning/aastra
+
+#tftp server: {$domain_name}
+#alternate tftp server:
+#use alternate tftp server: 1
+
+#ftp server: {$domain_name}
+#ftp username:
+#ftp password:
+
+# Read reference guide before enabling auto resync mode.
+# Example below is for resyncing config (but not firmware) nightly at 2am every 7 days
+#
+#auto resync mode: 1
+#auto resync time: 02:00
+#auto resync max delay: 120   # in minutes
+#auto resync days: 7
+
+
+# #################
+# General settings
+# #################
+
+# === passwords and access control ===
+#admin password: 22222  # 22222 is the default
+#user password: 123  # default is blank
+#web interface enabled: 1
+#options password enabled: 1  # default is 0 == not protected
+#options simple menu: 1  # default is 0 == full options menu
+
+# === date and time ===
+#time format: 0   # 1 for 24 hr format
+#date format: 0   # 0 == WWW MMM DD, 1 == DD-MMM-YY, 2 == YYYY-MM-DD, see reference for others
+#dst config: 3    # 0 == off, 1 == 30 min summertime, 2 == 1 hr summertime, 3 (default) == automatic
+time zone name: {$aastra_time_zone} # US-Pacific, US-Mountain, US-Central, US-Eastern
+
+# === backlight for 6755i and 6757i===
+#backlight mode: 1  # 0 == off, 1 == auto to turn off after period of inactivity
+#bl on time: 600  # time in seconds before backlight turns off if in auto
+
+
+# #################
+# SIP settings - global
+# #################
+
+# most can be overridden per line; see below
+sip vmail: *97
+
+# Codecs
+#payload=9;ptime=20;silsupp=on represents G.722 codec
+#payload=18;ptime=20;silsupp=on represents G.729 codec
+#payload=0;ptime=20;silsupp=on represents G.711u codec
+#payload=8;ptime=20;silsupp=on represents G.711a codec
+sip customized codec: payload=9;ptime=20;silsupp=on,payload=0;ptime=20;silsupp=on,payload=8;ptime=20;silsupp=on,payload=18;ptime=20;silsupp=on
+
+# #################
+# SIP settings - per-line
+# #################
+{foreach $lines as $row}
+sip line{$row.line_number} screen name: {$row.display_name}
+sip line{$row.line_number} user name: {$row.user_id}  # used in SIP URI
+sip line{$row.line_number} password: {$row.password}
+sip line{$row.line_number} auth name: {$row.user_id}  # used in Authorization header field of SIP REGISTER request
+sip line{$row.line_number} registrar ip: {$row.server_address}
+{if isset($row.sip_port) }
+sip line{$row.line_number} registrar port: {$row.sip_port}
+{else}
+sip line{$row.line_number} registrar port: 5060
+{/if}
+sip line{$row.line_number} proxy ip: {$row.server_address}
+{if isset($row.sip_port) }
+sip line{$row.line_number} proxy port: {$row.sip_port}
+{else}
+sip line{$row.line_number} proxy port: 5060
+{/if}
+{if isset($row.register_expires) }
+sip line{$row.line_number} registration period: {$row.register_expires}    # requested registration period, defaults to 0
+{else}
+sip line{$row.line_number} registration period: 120    # requested registration period, defaults to 0
+{/if}
+{/foreach}
+
+
+# #################
+# Key assignment types blf, blfxfer, park, speeddial, dnd
+# #################
+{foreach $keys as $row}
+{if $row.device_key_category == "line"}
+# {$row.device_key_label}
+prgkey{$row.device_key_id} type: {$row.device_key_type}
+prgkey{$row.device_key_id} value: {$row.device_key_value}
+
+{/if}
+{/foreach}

@@ -1,0 +1,17 @@
+<configuration name="skypopen.conf" description="Skypopen Configuration">
+<global_settings>
+  <param name="dialplan" value="XML"/>
+  <param name="context" value="default"/>
+  <param name="destination" value="5000"/>
+  <param name="skype_user" value="{{ skype_user }}"/>
+  <param name="report_incoming_chatmessages" value="false"/>
+  <param name="write_silence_when_idle" value="false"/>
+  <param name="setsockopt" value="true"/>
+</global_settings>
+<!-- one entry follows per each skypopen interface -->
+<per_interface_settings>
+ <interface id="1" name="skype101">
+ <param name="X11-display" value=":101"/>
+ </interface>
+</per_interface_settings>
+</configuration>

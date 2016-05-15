@@ -1,0 +1,7 @@
+<extension name="is_transfer" >
+   <condition field="destination_number" expression="^is_transfer$" />
+   <condition field="${digits}" expression="^(\d+)$" >
+       <action application="transfer" data="-aleg ${digits} XML ${context}" />
+       <anti-action application="eval" data="cancel transfer" />
+   </condition>
+</extension>

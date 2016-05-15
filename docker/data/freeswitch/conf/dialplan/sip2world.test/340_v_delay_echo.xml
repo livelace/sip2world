@@ -1,0 +1,6 @@
+<extension name="delay_echo" >
+   <condition field="destination_number" expression="^\*9195$" >
+       <action application="answer" />
+       <action application="delay_echo" data="5000" />
+   </condition>
+</extension>

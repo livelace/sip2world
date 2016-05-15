@@ -1,0 +1,13 @@
+[Unit]
+Description=CDR-stats django celery
+Requires=postgresql.service
+Wants=redis-server.service
+After=postgresql.service
+
+[Service]
+User=cdrstats
+WorkingDirectory=/opt/cdr-stats
+ExecStart=/usr/bin/python /opt/cdr-stats/cdr_stats/manage.py celery worker -l info --time-limit=300 --without-mingle
+
+[Install]
+WantedBy=multi-user.target

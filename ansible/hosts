@@ -1,0 +1,3 @@
+[sip2world]
+
+vm ansible_host=192.168.100.3 ansible_port=2222

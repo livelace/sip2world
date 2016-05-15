@@ -1,0 +1,6 @@
+<extension name="follow-me" >
+   <condition field="destination_number" expression="^\*21$" >
+       <action application="answer" />
+       <action application="lua" data="follow_me.lua" />
+   </condition>
+</extension>

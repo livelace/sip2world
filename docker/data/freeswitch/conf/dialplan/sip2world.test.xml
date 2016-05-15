@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<include>
+<context name="sip2world.test">
+	<X-PRE-PROCESS cmd="include" data="sip2world.test/*.xml"/>
+</context>
+</include>

@@ -1,0 +1,6 @@
+<extension name="intercept-ext" >
+   <condition field="destination_number" expression="^\*\*(\d+)$" >
+       <action application="answer" />
+       <action application="lua" data="intercept.lua $1" />
+   </condition>
+</extension>

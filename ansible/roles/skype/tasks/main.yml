@@ -1,0 +1,157 @@
+---
+
+- name: Add i386 architecture
+  command: "dpkg --add-architecture i386" 
+
+- name: Install Skype dependencies
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - fontconfig
+    - fontconfig-config
+    - pulseaudio
+    - xvfb
+    - gcc-4.8-base:i386
+    - libasound2:i386
+    - libasound2-plugins:i386
+    - libasyncns0:i386
+    - libattr1:i386
+    - libaudio2:i386
+    - libavahi-client3:i386
+    - libavahi-common3:i386
+    - libavahi-common-data:i386
+    - libavcodec56:i386
+    - libavutil54:i386
+    - libc6:i386
+    - libc6-i686:i386
+    - libcap2:i386
+    - libcomerr2:i386
+    - libcups2:i386
+    - libdbus-1-3:i386
+    - libdirac-encoder0:i386
+    - libexpat1:i386
+    - libffi6:i386
+    - libflac8:i386
+    - libfontconfig1
+    - libfontconfig1:i386
+    - libfreetype6:i386
+    - libgcc1:i386
+    - libgcrypt20:i386
+    - libglib2.0-0:i386
+    - libgnutls-deb0-28:i386
+    - libgpg-error0:i386
+    - libgsm1:i386
+    - libgssapi-krb5-2:i386
+    - libgstreamer0.10-0:i386
+    - libgstreamer-plugins-base0.10-0:i386
+    - libice6:i386
+    - libjack-jackd2-0:i386
+    - libjbig0:i386
+    - libjpeg62:i386
+    - libjson0:i386
+    - libk5crypto3:i386
+    - libkeyutils1:i386
+    - libkrb5-3:i386
+    - libkrb5support0:i386
+    - liblcms2-2:i386
+    - liblzma5:i386
+    - libmng1:i386
+    - libmp3lame0:i386
+    - libogg0:i386
+    - libopenjpeg5:i386
+    - liborc-0.4-0:i386
+    - libp11-kit0:i386
+    - libpcre3:i386
+    - libpng12-0:i386
+    - libpulse0:i386
+    - libqt4-dbus:i386
+    - libqt4-network:i386
+    - libqt4-xml
+    - libqt4-xml:i386
+    - libqtcore4
+    - libqtcore4:i386
+    - libqtdbus4
+    - libqtdbus4:i386
+    - libqtgui4:i386
+    - libqtwebkit4:i386
+    - libsamplerate0:i386
+    - libschroedinger-1.0-0:i386
+    - libselinux1:i386
+    - libsm6:i386
+    - libsndfile1:i386
+    - libspeex1:i386
+    - libspeexdsp1:i386
+    - libsqlite3-0:i386
+    - libssl1.0.0:i386
+    - libstdc++6:i386
+    - libtasn1-6:i386
+    - libtheora0:i386
+    - libtiff5:i386
+    - libuuid1:i386
+    - libva1:i386
+    - libvorbis0a:i386
+    - libvorbisenc2:i386
+    - libvpx1:i386
+    - libwrap0:i386
+    - libx11-6:i386
+    - libx11-xcb1:i386
+    - libx264-142:i386
+    - libxau6:i386
+    - libxcb1:i386
+    - libxdmcp6:i386
+    - libxext6:i386
+    - libxi6:i386
+    - libxml2:i386
+    - libxrender1:i386
+    - libxss1:i386
+    - libxt6:i386
+    - libxtst6:i386
+    - libxv1:i386
+    - libxvidcore4:i386
+    - qdbus
+    - ttf-dejavu-core
+    - tightvncserver
+    - uuid-runtime
+    - zlib1g:i386
+
+- name: Copy system.pa to /etc/pulse
+  copy: "src=system.pa dest=/etc/pulse/system.pa mode=0644"
+
+- name: Copy daemon.conf to /etc/pulse
+  copy: "src=daemon.conf dest=/etc/pulse/daemon.conf mode=0644"
+
+- name: Copy systemd service file
+  copy: "src=pulseaudio.service dest=/etc/systemd/system/pulseaudio.service mode=0644"
+  notify:
+    - reload systemd
+
+- name: Add user root to pulse-access
+  user: name=root groups=pulse-access append=yes
+
+- name: Enable and start Pulseaudio service
+  service: name=pulseaudio enabled=yes state=started
+
+- name: Create skypopen directory structure 
+  file: path={{ item }} state=directory
+  with_items:
+    - /opt/freeswitch/skypopen
+    - /opt/freeswitch/skypopen/skype-clients-configuration-dir
+    - /opt/freeswitch/skypopen/skype-clients-startup-dir
+    - /opt/freeswitch/skypopen/skype-clients-symlinks-dir
+ 
+- name: Fetch Skype {{ skype_version }} 
+  get_url: "url={{ skype_url }} dest=/tmp/skype-{{ skype_version }}.tar"
+
+- name: Extract skype to /opt/freeswitch/skypopen/skype-clients-symlinks-dir
+  command: "tar -xf /tmp/skype-{{ skype_version }}.tar --strip-components=1 -C /opt/freeswitch/skypopen/skype-clients-symlinks-dir skype-{{ skype_version }}/skype"
+
+- name: Symlink skype101 to skype binary
+  file: src=/opt/freeswitch/skypopen/skype-clients-symlinks-dir/skype dest=/opt/freeswitch/skypopen/skype-clients-symlinks-dir/skype101 state=link
+ 
+- name: Create skype startup script for user {{ skype_user }}
+  template: src=start_skype_clients.sh.j2 dest=/opt/freeswitch/skypopen/skype-clients-startup-dir/start_skype_clients.sh mode=755
+
+- name: Add skype startup script to /etc/rc.local
+  lineinfile: dest=/etc/rc.local insertbefore="^exit 0" line="/opt/freeswitch/skypopen/skype-clients-startup-dir/start_skype_clients.sh"
+
+- name: Create skypopen module configuration
+  template: src=skypopen.conf.xml.j2 dest=/opt/freeswitch/etc/freeswitch/autoload_configs/skypopen.conf.xml

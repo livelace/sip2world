@@ -1,0 +1,85 @@
+<configuration name="modules.conf" description="Modules">
+	<modules>
+
+		<!-- Languages -->
+		<load module="mod_lua"/>
+
+		<!-- Loggers -->
+		<load module="mod_syslog"/>
+		<load module="mod_logfile"/>
+		<load module="mod_console"/>
+
+		<!-- Applications -->
+		<load module="mod_valet_parking"/>
+		<load module="mod_rtmp"/>
+		<load module="mod_fsv"/>
+		<load module="mod_avmd"/>
+		<load module="mod_spandsp"/>
+		<load module="mod_fifo"/>
+		<load module="mod_enum"/>
+		<load module="mod_esf"/>
+		<load module="mod_callcenter"/>
+		<load module="mod_expr"/>
+		<load module="mod_memcache"/>
+		<load module="mod_hash"/>
+		<load module="mod_conference"/>
+		<load module="mod_db"/>
+		<load module="mod_commands"/>
+		<load module="mod_curl"/>
+		<load module="mod_sms"/>
+		<load module="mod_blacklist"/>
+		<load module="mod_dptools"/>
+
+		<!-- Auto -->
+
+		<!-- Codecs -->
+		<load module="mod_bv"/>
+		<load module="mod_vp8"/>
+		<load module="mod_opus"/>
+		<load module="mod_silk"/>
+		<load module="mod_theora"/>
+		<load module="mod_isac"/>
+		<load module="mod_h26x"/>
+		<load module="mod_celt"/>
+		<load module="mod_g729"/>
+		<load module="mod_ilbc"/>
+		<load module="mod_amr"/>
+		<load module="mod_siren"/>
+		<load module="mod_g723_1"/>
+
+		<!-- Dialplan Interfaces -->
+		<load module="mod_dialplan_xml"/>
+
+		<!-- Endpoints -->
+		<load module="mod_gsmopen"/>
+		<load module="mod_sofia"/>
+		<load module="mod_loopback"/>
+
+		<!-- Event Handlers -->
+		<load module="mod_cdr_sqlite"/>
+		<load module="mod_event_socket"/>
+
+		<!-- File Format Interfaces -->
+		<load module="mod_sndfile"/>
+		<load module="mod_native_file"/>
+
+		<!-- Other -->
+
+		<!-- Say -->
+		<load module="mod_say_ru"/>
+		<load module="mod_say_en"/>
+
+		<!-- Speech Recognition / Text to Speech -->
+		<load module="mod_pocketsphinx"/>
+		<load module="mod_tts_commandline"/>
+		<load module="mod_flite"/>
+
+		<!-- Streams / Files -->
+		<load module="mod_local_stream"/>
+		<load module="mod_shout"/>
+		<load module="mod_tone_stream"/>
+
+		<!-- XML Interfaces -->
+
+	</modules>
+</configuration>

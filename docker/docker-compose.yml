@@ -1,0 +1,79 @@
+apache:
+  image: livelace/sip2world-apache:2.4.7
+  volumes:
+    - ./data/fusionpbx:/var/www/html/fusionpbx
+    - ./data/freeswitch:/opt/freeswitch
+  links:
+    - freeswitch:freeswitch
+    - postgresql:postgresql
+  ports:
+    - "8080:80/tcp"
+    - "8443:443/tcp"
+
+baresip:
+  image: livelace/sip2world-baresip:0.4.12
+  links:
+    - freeswitch:freeswitch
+  ports:
+    - "1111:1111/udp"
+
+freeswitch:
+  image: livelace/sip2world-freeswitch:1.4.18
+  volumes:
+    - ./data/freeswitch/conf:/opt/freeswitch/conf
+    - ./data/freeswitch/db:/opt/freeswitch/db
+    - ./data/freeswitch/recordings:/opt/freeswitch/recordings
+    - ./data/freeswitch/scripts:/opt/freeswitch/scripts
+    - ./data/freeswitch/storage:/opt/freeswitch/storage
+    - ./data/freeswitch/mod:/mod
+  links:
+    - memcached:memcached
+    - postgresql:postgresql
+  ports:
+    - "5060:5060/udp"
+    - "5061:5061/tcp"
+    - "8021:8021/tcp"
+
+memcached:
+  image: memcached 
+  ports:
+    - "11211:11211/tcp"
+
+postgresql:
+  image: livelace/sip2world-postgresql:9.4 
+  volumes:
+    - ./data/postgresql:/var/lib/postgresql
+  ports:
+    - "15432:5432/tcp"
+
+redis:
+  image: redis
+  ports:
+    - "16379:6379/tcp"
+
+cdrstats3:
+  image: livelace/sip2world-cdr-stats:3.0.0
+  links:
+    - postgresql:postgresql
+    - redis:redis
+  ports:
+    - "8000:8000/tcp"
+
+cdrstats3pusher:
+  image: livelace/sip2world-cdr-stats-pusher:3.0.0
+  volumes:
+    - ./data/freeswitch/db:/opt/freeswitch/db
+  links:
+    - postgresql:postgresql
+
+cdrstats3djcelery:
+  image: livelace/sip2world-cdr-stats-djcelery:3.0.0
+  links:
+    - postgresql:postgresql
+    - redis:redis
+
+cdrstats3djcelerybeat:
+  image: livelace/sip2world-cdr-stats-djcelerybeat:3.0.0
+  links:
+    - postgresql:postgresql
+    - redis:redis

@@ -1,0 +1,6 @@
+<extension name="agent_status_id" >
+   <condition field="destination_number" expression="^\*23$" >
+       <action application="set" data="agent_id=" />
+       <action application="lua" data="app.lua agent_status" />
+   </condition>
+</extension>

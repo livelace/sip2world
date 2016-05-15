@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sip2world-service 
+spec:
+  selector:
+    app: sip2world 
+  ports:
+    - port: 1111
+      targetPort: 1111
+      nodePort: 1111
+      name: baresip
+
+    - port: 80 
+      targetPort: 80
+      nodePort: 80
+      name: apache-http
+    
+    - port: 443
+      targetPort: 443
+      nodePort: 443
+      name: apache-https
+
+    - port: 5060
+      targetPort: 5060 
+      nodePort: 5060
+      name: freeswitch-sip
+
+    - port: 5061
+      targetPort: 5061
+      nodePort: 5061
+      name: freeswitch-sip-ssl
+
+    - port: 8000 
+      targetPort: 8000 
+      nodePort: 8000
+      name: django-cdrstat
+
+    - port: 8021 
+      targetPort: 8021
+      nodePort: 8021
+      name: freeswitch-cli
+
+  type: NodePort

@@ -1,0 +1,5 @@
+<extension name="call_block" continue="true">
+   <condition >
+       <action application="lua" data="app.lua call_block" />
+   </condition>
+</extension>

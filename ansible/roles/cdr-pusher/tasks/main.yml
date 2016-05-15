@@ -1,0 +1,32 @@
+---
+
+- name: Install CDR-pusher dependencies
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - bison
+    - bzr
+    - mercurial
+
+- name: Download gvm (Go version manager)
+  get_url: url=https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer dest=/tmp/gvm-installer mode=0755
+
+- name: Install gvm (Go version manager)
+  shell: /tmp/gvm-installer; exit 0
+
+- name: Install Go 1.4.2
+  shell: source /root/.gvm/scripts/gvm && gvm install go1.4.2 --binary && gvm use go1.4.2 --default
+  args:
+    executable: /bin/bash
+
+- name: Clone CDR-pusher repository
+  git: "repo={{ cdrpusher_url }} dest=/opt/cdr-pusher force=yes"
+
+- name: Build CDR-pusher
+  command: make build
+  args:
+    chdir: /opt/cdr-pusher
+  environment:
+    GOPATH: /opt/cdr-pusher
+
+- name: Copy cdr-pusher.yaml to source
+  copy: "src=cdr-pusher.yaml dest=/etc/cdr-pusher.yaml mode=0644"

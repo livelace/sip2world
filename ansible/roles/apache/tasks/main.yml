@@ -1,0 +1,13 @@
+---
+
+- name: Install Apache
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - apache2
+    - php5
+    - php5-pgsql
+    - php5-sqlite
+
+  notify:
+    - restart apache
+

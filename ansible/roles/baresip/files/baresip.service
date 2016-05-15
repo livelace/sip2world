@@ -1,0 +1,13 @@
+[Unit]
+Description=baresip
+After=syslog.target network.target local-fs.target
+
+[Service]
+Type=simple
+User=baresip
+Group=video
+ExecStart=/usr/local/bin/baresip -f /home/baresip 
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

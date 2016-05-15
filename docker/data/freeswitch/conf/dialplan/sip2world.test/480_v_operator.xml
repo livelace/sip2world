@@ -1,0 +1,9 @@
+<extension name="operator" >
+   <condition field="destination_number" expression="^0$|^operator$" >
+       <action application="export" data="transfer_context=sip2world.test" />
+       <action application="bind_meta_app" data="4 ab s execute_extension::att_xfer XML features" />
+       <action application="bind_meta_app" data="5 ab s execute_extension::xfer_vm XML features" />
+       <action application="set" data="domain_name=sip2world.test" />
+       <action application="transfer" data="1001 XML sip2world.test" />
+   </condition>
+</extension>

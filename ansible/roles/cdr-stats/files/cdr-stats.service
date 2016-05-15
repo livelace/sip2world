@@ -1,0 +1,13 @@
+[Unit]
+Description=CDR-stats
+Requires=postgresql.service
+Wants=redis.service
+After=postgresql.service
+
+[Service]
+User=cdrstats
+WorkingDirectory=/opt/cdr-stats
+ExecStart=/usr/bin/python /opt/cdr-stats/cdr_stats/manage.py runserver 0.0.0.0:8000
+
+[Install]
+WantedBy=multi-user.target

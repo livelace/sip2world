@@ -1,0 +1,69 @@
+version: '2'
+
+
+services:
+  apache:
+    image: livelace/sip2world-apache:2.4.7
+    volumes:
+      - /virtualization/docker/sip2world/data/fusionpbx:/var/www/html/fusionpbx
+      - /virtualization/docker/sip2world/data/freeswitch:/opt/freeswitch
+    ports:
+      - "8080:80/tcp"
+      - "8443:443/tcp"
+
+  baresip:
+    image: livelace/sip2world-baresip:0.4.12
+    ports:
+      - "1111:1111/udp"
+
+  freeswitch:
+    image: livelace/sip2world-freeswitch:1.4.18
+    volumes:
+      - /virtualization/docker/sip2world/data/freeswitch/conf:/opt/freeswitch/conf
+      - /virtualization/docker/sip2world/data/freeswitch/db:/opt/freeswitch/db
+      - /virtualization/docker/sip2world/data/freeswitch/recordings:/opt/freeswitch/recordings
+      - /virtualization/docker/sip2world/data/freeswitch/scripts:/opt/freeswitch/scripts
+      - /virtualization/docker/sip2world/data/freeswitch/storage:/opt/freeswitch/storage
+      - /virtualization/docker/sip2world/data/freeswitch/mod:/mod
+    ports:
+      - "5060:5060/udp"
+      - "5061:5061/tcp"
+      - "8021:8021/tcp"
+
+  memcached:
+    image: memcached 
+    ports:
+      - "11211:11211/tcp"
+
+  postgresql:
+    image: livelace/sip2world-postgresql:9.4 
+    volumes:
+      - /virtualization/docker/sip2world/data/postgresql:/var/lib/postgresql
+    ports:
+      - "15432:5432/tcp"
+
+  redis:
+    image: redis
+    ports:
+      - "16379:6379/tcp"
+
+  cdrstats3:
+    image: livelace/sip2world-cdr-stats:3.0.0
+    ports:
+      - "8000:8000/tcp"
+
+  cdrstats3pusher:
+    image: livelace/sip2world-cdr-stats-pusher:3.0.0
+    volumes:
+      - /virtualization/docker/sip2world/data/freeswitch/db:/opt/freeswitch/db
+
+  cdrstats3djcelery:
+    image: livelace/sip2world-cdr-stats-djcelery:3.0.0
+
+  cdrstats3djcelerybeat:
+    image: livelace/sip2world-cdr-stats-djcelerybeat:3.0.0
+
+networks:
+  default:
+    external:
+      name: swarm

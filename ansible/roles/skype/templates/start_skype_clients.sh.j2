@@ -1,0 +1,11 @@
+#!/bin/sh
+
+
+#start the fake X server on the given port
+/usr/bin/Xvnc -ac -geometry 1024x768 :101 &
+sleep 3
+# start a Skype client instance that will connect to the X server above, and will login to the Skype network using the 'username password' you send to it on stdin.
+su root -c "/bin/echo '{{ skype_user }} {{ skype_password }}'| DISPLAY=:101  /opt/freeswitch/skypopen/skype-clients-symlinks-dir/skype101 --dbpath=/opt/freeswitch/skypopen/skype-clients-configuration-dir/skype101 --pipelogin &"
+sleep 7
+
+exit 0

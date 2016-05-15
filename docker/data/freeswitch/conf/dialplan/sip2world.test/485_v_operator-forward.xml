@@ -1,0 +1,8 @@
+<extension name="operator-forward" >
+   <condition field="destination_number" expression="^\*000$" >
+       <action application="set" data="dial_string=loopback/operator/sip2world.test/XML" />
+       <action application="set" data="direction=both" />
+       <action application="set" data="extension=true" />
+       <action application="lua" data="dial_string.lua" />
+   </condition>
+</extension>

@@ -1,0 +1,8 @@
+<extension name="wake-up" >
+   <condition field="destination_number" expression="^\*(925)$" >
+       <action application="answer" />
+       <action application="set" data="pin_number=91312985" />
+       <action application="set" data="time_zone_offset=-7" />
+       <action application="lua" data="wakeup.lua" />
+   </condition>
+</extension>

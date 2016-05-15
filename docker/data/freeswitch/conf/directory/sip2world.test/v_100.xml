@@ -1,0 +1,24 @@
+<include>
+  <user id="100">
+    <params>
+      <param name="password" value="100"/>
+      <param name="reverse-auth-user" value="100"/>
+      <param name="reverse-auth-pass" value="100"/>
+      <param name="vm-password" value="459981223"/>
+      <param name="vm-enabled" value="true"/>
+      <param name="directory-exten-visible" value="true"/>
+      <param name="dial-string" value="{sip_invite_domain=${domain_name},leg_timeout=30,presence_id=${dialed_user}@${dialed_domain}}${sofia_contact(${dialed_user}@${dialed_domain})}"/>
+    </params>
+    <variables>
+      <variable name="domain_name" value="sip2world.test"/>
+      <variable name="domain_uuid" value="d163e07f-0e3b-45bb-9887-75e381040965"/>
+      <variable name="extension_uuid" value="945c74be-e340-4634-b0b5-cd2a197898bf"/>
+      <variable name="toll_allow" value=""/>
+      <variable name="call_timeout" value="30"/>
+      <variable name="accountcode" value="sip2world.test"/>
+      <variable name="user_context" value="sip2world.test"/>
+      <variable name="directory-visible" value="true"/>
+      <variable name="limit_max" value="5"/>
+    </variables>
+  </user>
+</include>

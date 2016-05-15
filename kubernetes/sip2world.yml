@@ -1,0 +1,127 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "sip2world"
+  labels:
+    app: "sip2world"
+spec:
+  containers:
+  - name: apache
+    image: livelace/sip2world-apache:2.4.7
+    lifecycle:
+      postStart:
+        exec:
+          command: ["/bin/bash","-c","echo 127.0.0.1 postgresql >> /etc/hosts; echo 127.0.0.1 fusionpbx >> /etc/hosts; echo 127.0.0.1 redis >> /etc/hosts;echo 127.0.0.1 freeswitch >> /etc/hosts; echo 127.0.0.1 memcached >> /etc/hosts"]
+    ports:
+    - containerPort: 80
+    - containerPort: 443
+    volumeMounts:
+    - mountPath: /var/www/html/fusionpbx
+      name: fusionpbx
+
+    - mountPath: /opt/freeswitch
+      name: freeswitch
+
+  - name: baresip
+    image: livelace/sip2world-baresip:0.4.12 
+    ports:
+    - containerPort: 1111
+      protocol: UDP 
+
+  - name: freeswitch
+    image: livelace/sip2world-freeswitch:1.4.18
+    ports:
+    - containerPort: 5060
+      protocol: UDP
+    - containerPort: 5061
+    - containerPort: 8021
+    volumeMounts:
+    - mountPath: /opt/freeswitch/conf
+      name: freeswitch-conf 
+
+    - mountPath: /opt/freeswitch/db
+      name: freeswitch-db
+
+    - mountPath: /mod
+      name: freeswitch-mod
+
+    - mountPath: /opt/freeswitch/recordings
+      name: freeswitch-recordings
+
+    - mountPath: /opt/freeswitch/scripts
+      name: freeswitch-scripts
+
+    - mountPath: /opt/freeswitch/storage
+      name: freeswitch-storage
+
+  - name: memcached
+    image: memcached
+    ports:
+    - containerPort: 11211
+
+  - name: postgresql
+    image: livelace/sip2world-postgresql:9.4
+    ports: 
+    - containerPort: 5432
+    volumeMounts:
+    - mountPath: /var/lib/postgresql
+      name: postgresql
+
+  - name: redis
+    image: redis
+    ports:
+    - containerPort: 6379
+
+  - name: cdrstats3
+    image: livelace/sip2world-cdr-stats:3.0.0
+    ports:
+    - containerPort: 8000
+
+  - name: cdrstats3pusher
+    image: livelace/sip2world-cdr-stats-pusher:3.0.0
+    volumeMounts:
+    - mountPath: /opt/freeswitch/db
+      name: freeswitch-db 
+    
+  - name: cdrstats3djcelery
+    image: livelace/sip2world-cdr-stats-djcelery:3.0.0
+
+  - name: cdrstats3djcelerybeat
+    image: livelace/sip2world-cdr-stats-djcelerybeat:3.0.0
+
+  volumes:
+  - name: freeswitch
+    hostPath:
+        path: /virtualization/docker/sip2world/data/freeswitch
+
+  - name: freeswitch-conf
+    hostPath:
+        path: /virtualization/docker/sip2world/data/freeswitch/conf
+
+  - name: freeswitch-db
+    hostPath:
+        path: /virtualization/docker/sip2world/data/freeswitch/db
+
+  - name: freeswitch-mod
+    hostPath:
+        path: /virtualization/docker/sip2world/data/freeswitch/mod
+
+  - name: freeswitch-recordings
+    hostPath:
+        path: /virtualization/docker/sip2world/data/freeswitch/recordings
+
+  - name: freeswitch-scripts
+    hostPath:
+        path: /virtualization/docker/sip2world/data/freeswitch/scripts
+
+  - name: freeswitch-storage
+    hostPath:
+        path: /virtualization/docker/sip2world/data/freeswitch/storage
+
+  - name: fusionpbx
+    hostPath:
+        path: /virtualization/docker/sip2world/data/fusionpbx
+
+  - name: postgresql
+    hostPath:
+        path: /virtualization/docker/sip2world/data/postgresql
