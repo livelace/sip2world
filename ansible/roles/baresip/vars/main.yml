@@ -1,8 +1,0 @@
----
-baresip_version: 0.4.12
-re_version: 0.4.12
-rem_version: 0.4.6
-
-baresip_url: "http://creytiv.com/pub/baresip-{{ baresip_version }}.tar.gz"
-re_url: "http://creytiv.com/pub/re-{{ re_version }}.tar.gz"
-rem_url: "http://creytiv.com/pub/rem-{{ rem_version }}.tar.gz"

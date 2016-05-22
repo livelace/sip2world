@@ -4,12 +4,12 @@
     <param name="dialplan" value="XML"/>
     <param name="context" value="{{ sip_domain }}"/>
     <param name="hold-music" value="$${moh_uri}"/>
-    <param name="destination" value="100"/>
+    <param name="destination" value="{{ gsmopen_destination }}"/>
   </global_settings>
   <per_interface_settings>
     <interface id="1" name="mts">
-      <param name="controldevice_name" value="/dev/ttyUSB1"/>
-      <param name="controldevice_audio_name" value="/dev/ttyUSB0"/>
+      <param name="controldevice_name" value="/dev/ttyUSB2"/>
+      <param name="controldevice_audio_name" value="/dev/ttyUSB1"/>
       <param name="capture_boost" value="30"/>
       <param name="playback_boost" value="-10"/>
     </interface>

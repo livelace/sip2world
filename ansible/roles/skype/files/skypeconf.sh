@@ -39,7 +39,7 @@ read -s password
 
 if [ "$username" != "" ] && [ "$password" != "" ];then
 
-  echo "INFO: Set username and password in Skype startup script"
+  echo -e "\nINFO: Set username and password in Skype startup script"
   sed -i "s|username|${username}|g" $sh_file
   sed -i "s|password|${password}|g" $sh_file
 

@@ -1,0 +1,52 @@
+---
+#-----------------------------------------------------------------------------
+# Global
+
+sip_ip: "192.168.217.100"
+sip_domain: "sip2world.test"
+
+#-----------------------------------------------------------------------------
+# Baresip
+
+baresip_version: "0.4.12"
+re_version: "0.4.12"
+rem_version: "0.4.6"
+
+baresip_url: "http://creytiv.com/pub/baresip-{{ baresip_version }}.tar.gz"
+re_url: "http://creytiv.com/pub/re-{{ re_version }}.tar.gz"
+rem_url: "http://creytiv.com/pub/rem-{{ rem_version }}.tar.gz"
+
+#-----------------------------------------------------------------------------
+# CDR-Stats
+
+cdrpusher_url: "https://github.com/areski/cdr-pusher.git"
+cdrstats_url: "https://github.com/cdr-stats/cdr-stats.git"
+
+#-----------------------------------------------------------------------------
+# Freeswitch
+
+freeswitch_version: "1.6.8"
+freeswitch_url: "http://files.freeswitch.org/freeswitch-releases/freeswitch-{{ freeswitch_version }}.tar.bz2"
+freeswitch_make_jobs: "6"
+
+#-----------------------------------------------------------------------------
+# FusionPBX
+
+fusionpbx_version: "master"
+fusionpbx_url: "https://github.com/fusionpbx/fusionpbx.git"
+
+#-----------------------------------------------------------------------------
+# Gsmopen
+
+gsmopen_destination: "100"
+
+#-----------------------------------------------------------------------------
+# Skype
+
+skype_version: "4.3.0.37"
+skype_url: "http://download.skype.com/linux/skype-{{ skype_version }}.tar.bz2"
+skype_user: "username"
+skype_password: "password"
+skype_destination: "100"
+
+#-----------------------------------------------------------------------------

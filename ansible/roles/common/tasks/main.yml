@@ -1,10 +1,10 @@
 ---
 
-- name: Delete old APT lists
-  command: "rm -rf /var/lib/apt/lists/*"
+#- name: Delete old APT lists
+#  command: "rm -rf /var/lib/apt/lists/*"
 
-- name: Clean APT cache
-  command: "apt-get clean all" 
+#- name: Clean APT cache
+#  command: "apt-get clean all" 
 
 - name: Update system
   apt: upgrade=dist update_cache=yes 

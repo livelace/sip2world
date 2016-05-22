@@ -1,6 +1,6 @@
 ---
 - name: Install and configure sip2world bundle 
-  hosts: sip2world
+  hosts: sip2world-servers
   remote_user: root
 
   roles:

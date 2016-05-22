@@ -1,6 +1,5 @@
 version: '2'
 
-
 services:
   apache:
     image: livelace/sip2world-apache:2.4.7

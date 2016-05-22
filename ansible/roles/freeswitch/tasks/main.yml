@@ -46,6 +46,7 @@
     - libxcb1-dev
     - libxdmcp-dev
     - libyaml-dev
+    - minicom
     - mono-mcs
     - odbc-postgresql
     - openjdk-7-jdk
@@ -96,6 +97,9 @@
 
 - name: Create symlink to fs_cli
   file: src=/opt/freeswitch/bin/fs_cli dest=/usr/bin/fs_cli state=link
+
+- name: Add user www-data to dialout
+  user: name=www-data groups=dialout append=yes
 
 - name: Copy systemd service file
   copy: "src=freeswitch-systemd.freeswitch.service dest=/etc/systemd/system/freeswitch.service mode=0644"
