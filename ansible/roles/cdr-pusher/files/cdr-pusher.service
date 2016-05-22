@@ -1,0 +1,11 @@
+[Unit]
+Description=CDR-pusher
+Requires=postgresql.service freeswitch.service
+After=postgresql.service freeswitch.service
+
+[Service]
+User=www-data
+ExecStart=/opt/cdr-pusher/bin/cdr-pusher
+
+[Install]
+WantedBy=multi-user.target

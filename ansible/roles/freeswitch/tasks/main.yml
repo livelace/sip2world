@@ -52,6 +52,7 @@
     - pkg-config
     - portaudio19-dev
     - python-dev
+    - sqlite3
     - usb-modeswitch
     - usb-modeswitch-data
     - uuid-dev
@@ -89,6 +90,9 @@
 
 - name: Copy cdr_sqlite.conf.xml
   copy: "src=cdr_sqlite.conf.xml dest=/opt/freeswitch/etc/freeswitch/autoload_configs/cdr_sqlite.conf.xml owner=www-data group=www-data mode=0644"
+
+- name: Create gsmopen module configuration
+  template: src=gsmopen.conf.xml.j2 dest=/opt/freeswitch/etc/freeswitch/autoload_configs/gsmopen.conf.xml
 
 - name: Create symlink to fs_cli
   file: src=/opt/freeswitch/bin/fs_cli dest=/usr/bin/fs_cli state=link

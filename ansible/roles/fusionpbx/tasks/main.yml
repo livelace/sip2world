@@ -1,7 +1,7 @@
 ---
 
 - name: Clone FuisonPBX repository  
-  git: "repo={{ fusionpbx_url }} dest=/var/www/html/fusionpbx force=yes"
+  git: "repo={{ fusionpbx_url }} dest=/var/www/html/fusionpbx version={{ fusionpbx_version }} force=yes"
 
 - name: Set owner to /var/www/html/fusionpbx as www-data user
   file: path=/var/www/html/fusionpbx state=directory owner=www-data group=www-data recurse=yes mode=0775

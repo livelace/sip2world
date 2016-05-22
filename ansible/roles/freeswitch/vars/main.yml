@@ -1,4 +1,4 @@
 ---
-freeswitch_version: 1.6.7
+freeswitch_version: "1.6.8"
 freeswitch_url: "http://files.freeswitch.org/freeswitch-releases/freeswitch-{{ freeswitch_version }}.tar.bz2"
-freeswitch_make_jobs: 6
+freeswitch_make_jobs: "6"

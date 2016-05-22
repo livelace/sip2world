@@ -28,4 +28,4 @@
 #  <sip:user:secret@1.2.3.4;transport=tcp>
 #  <sip:user:secret@[2001:df8:0:16:216:6fff:fe91:614c]:5070;transport=tcp>
 #
-<sip:webcam:webcam@127.0.0.1>;transport=udp;answermode=auto;video_codecs=h264,h263,vp8
+<sip:webcam:webcam@sip2world.test>;transport=udp;answermode=auto;video_codecs=vp8

@@ -1,3 +1,3 @@
 ---
-fusionpbx_version: 4.0
-fusionpbx_url: https://github.com/fusionpbx/fusionpbx.git
+fusionpbx_version: "master"
+fusionpbx_url: "https://github.com/fusionpbx/fusionpbx.git"

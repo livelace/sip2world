@@ -155,3 +155,6 @@
 
 - name: Create skypopen module configuration
   template: src=skypopen.conf.xml.j2 dest=/opt/freeswitch/etc/freeswitch/autoload_configs/skypopen.conf.xml
+
+- name: Copy skypeconf.sh configuration script to /root
+  copy: "src=skypeconf.sh dest=/root/skypeconf.sh mode=0755"

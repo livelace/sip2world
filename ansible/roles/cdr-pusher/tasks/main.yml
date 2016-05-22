@@ -30,3 +30,11 @@
 
 - name: Copy cdr-pusher.yaml to source
   copy: "src=cdr-pusher.yaml dest=/etc/cdr-pusher.yaml mode=0644"
+
+- name: Copy cdr-pusher.service
+  copy: "src=cdr-pusher.service dest=/etc/systemd/system/cdr-pusher.service mode=0644"
+  notify:
+    - reload systemd
+
+- name: Enable and start cdr-pusher.service
+  service: name=cdr-pusher enabled=yes state=started

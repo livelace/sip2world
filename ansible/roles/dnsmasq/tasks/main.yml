@@ -1,0 +1,16 @@
+---
+
+- name: Install Dnsamasq
+  apt: name=dnsmasq state=present update_cache=yes
+
+- name: Add host record to /etc/hosts 
+  lineinfile: dest=/etc/hosts line="{{ sip_ip }} {{ sip_domain }}"
+
+- name: Create Dnsmasq configuration
+  template: src=dnsmasq.conf.j2 dest=/etc/dnsmasq.conf
+
+- name: Copy dhclient.conf to /etc/dhcp
+  copy: "src=dhclient.conf dest=/etc/dhcp/dhclient.conf mode=0644"
+
+- name: Enable and start Dnsmasq service
+  service: name=dnsmasq enabled=yes state=started
