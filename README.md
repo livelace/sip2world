@@ -15,3 +15,7 @@ The project can be started inside:
 * [Kubernetes](http://kubernetes.io/)
 * [Swarm](https://www.docker.com/products/docker-swarm)
 * [Vagrant](https://www.vagrantup.com/)
+
+For automated installation and configuration was created Ansible subproject which give a possibility to inspect all aspects of software interaction. You can set versions of software and install bunch of software in one command (target operating system is Debina 8).  
+
+Freeswitch and baresip were assembled with all possible features and codecs. 
