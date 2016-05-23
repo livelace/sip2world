@@ -18,3 +18,9 @@ For automated installation and configuration was created Ansible subproject whic
 * [Swarm](https://www.docker.com/products/docker-swarm)
 * [Vagrant](https://www.vagrantup.com/)
 
+
+[Docker quick start](http://livelace.org/posts/2015/Jun/28/sip2world/)  
+[Kubernetes quick start](http://livelace.org/posts/2016/Feb/01/sip2world-kubernetes/)  
+[Swarm quick start](http://livelace.org/posts/2016/Feb/14/sip2world-swarm/)  
+
+[YouTube playlist](https://www.youtube.com/playlist?list=PLwUdklTGGXU1mE3UQT5m9Mq0N9d7OxwJs)
