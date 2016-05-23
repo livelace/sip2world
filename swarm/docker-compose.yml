@@ -4,8 +4,8 @@ services:
   apache:
     image: livelace/sip2world-apache:2.4.7
     volumes:
-      - /virtualization/docker/sip2world/data/fusionpbx:/var/www/html/fusionpbx
-      - /virtualization/docker/sip2world/data/freeswitch:/opt/freeswitch
+      - /sip2world/docker/data/fusionpbx:/var/www/html/fusionpbx
+      - /sip2world/docker/data/freeswitch:/opt/freeswitch
     ports:
       - "8080:80/tcp"
       - "8443:443/tcp"
@@ -18,12 +18,12 @@ services:
   freeswitch:
     image: livelace/sip2world-freeswitch:1.4.18
     volumes:
-      - /virtualization/docker/sip2world/data/freeswitch/conf:/opt/freeswitch/conf
-      - /virtualization/docker/sip2world/data/freeswitch/db:/opt/freeswitch/db
-      - /virtualization/docker/sip2world/data/freeswitch/recordings:/opt/freeswitch/recordings
-      - /virtualization/docker/sip2world/data/freeswitch/scripts:/opt/freeswitch/scripts
-      - /virtualization/docker/sip2world/data/freeswitch/storage:/opt/freeswitch/storage
-      - /virtualization/docker/sip2world/data/freeswitch/mod:/mod
+      - /sip2world/docker/data/freeswitch/conf:/opt/freeswitch/conf
+      - /sip2world/docker/data/freeswitch/db:/opt/freeswitch/db
+      - /sip2world/docker/data/freeswitch/recordings:/opt/freeswitch/recordings
+      - /sip2world/docker/data/freeswitch/scripts:/opt/freeswitch/scripts
+      - /sip2world/docker/data/freeswitch/storage:/opt/freeswitch/storage
+      - /sip2world/docker/data/freeswitch/mod:/mod
     ports:
       - "5060:5060/udp"
       - "5061:5061/tcp"
@@ -37,7 +37,7 @@ services:
   postgresql:
     image: livelace/sip2world-postgresql:9.4 
     volumes:
-      - /virtualization/docker/sip2world/data/postgresql:/var/lib/postgresql
+      - /sip2world/docker/data/postgresql:/var/lib/postgresql
     ports:
       - "15432:5432/tcp"
 
@@ -54,7 +54,7 @@ services:
   cdrstats3pusher:
     image: livelace/sip2world-cdr-stats-pusher:3.0.0
     volumes:
-      - /virtualization/docker/sip2world/data/freeswitch/db:/opt/freeswitch/db
+      - /sip2world/docker/data/freeswitch/db:/opt/freeswitch/db
 
   cdrstats3djcelery:
     image: livelace/sip2world-cdr-stats-djcelery:3.0.0
