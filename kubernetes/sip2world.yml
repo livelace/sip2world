@@ -92,36 +92,36 @@ spec:
   volumes:
   - name: freeswitch
     hostPath:
-        path: /virtualization/docker/sip2world/data/freeswitch
+        path: /sip2world/docker/data/freeswitch
 
   - name: freeswitch-conf
     hostPath:
-        path: /virtualization/docker/sip2world/data/freeswitch/conf
+        path: /sip2world/docker/data/freeswitch/conf
 
   - name: freeswitch-db
     hostPath:
-        path: /virtualization/docker/sip2world/data/freeswitch/db
+        path: /sip2world/docker/data/freeswitch/db
 
   - name: freeswitch-mod
     hostPath:
-        path: /virtualization/docker/sip2world/data/freeswitch/mod
+        path: /sip2world/docker/data/freeswitch/mod
 
   - name: freeswitch-recordings
     hostPath:
-        path: /virtualization/docker/sip2world/data/freeswitch/recordings
+        path: /sip2world/docker/data/freeswitch/recordings
 
   - name: freeswitch-scripts
     hostPath:
-        path: /virtualization/docker/sip2world/data/freeswitch/scripts
+        path: /sip2world/docker/data/freeswitch/scripts
 
   - name: freeswitch-storage
     hostPath:
-        path: /virtualization/docker/sip2world/data/freeswitch/storage
+        path: /sip2world/docker/data/freeswitch/storage
 
   - name: fusionpbx
     hostPath:
-        path: /virtualization/docker/sip2world/data/fusionpbx
+        path: /sip2world/docker/data/fusionpbx
 
   - name: postgresql
     hostPath:
-        path: /virtualization/docker/sip2world/data/postgresql
+        path: /sip2world/docker/data/postgresql
