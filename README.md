@@ -21,8 +21,8 @@ For automated installation and configuration was created Ansible subproject whic
 
 ##### Quick start:
 
-[Docker](http://livelace.org/posts/2015/Jun/28/sip2world/)  
-[Kubernetes](http://livelace.org/posts/2016/Feb/01/sip2world-kubernetes/)  
-[Swarm](http://livelace.org/posts/2016/Feb/14/sip2world-swarm/)  
+* [Docker](http://livelace.org/posts/2015/Jun/28/sip2world/)  
+* [Kubernetes](http://livelace.org/posts/2016/Feb/01/sip2world-kubernetes/)  
+* [Swarm](http://livelace.org/posts/2016/Feb/14/sip2world-swarm/)  
 
 [YouTube playlist](https://www.youtube.com/playlist?list=PLwUdklTGGXU1mE3UQT5m9Mq0N9d7OxwJs)
