@@ -1,0 +1,409 @@
+apiVersion: v1
+kind: List
+items:
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: sip2world
+  spec:
+    selector:
+      name: sip2world
+    ports:
+      - port: 80 
+        targetPort: 80
+        name: apache-http
+
+      - port: 8000
+        targetPort: 8000
+        name: django-cdrstat
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: apache
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: livelace/sip2world-apache:2.4.7
+      from:
+        kind: DockerImage
+        name: livelace/sip2world-apache:2.4.7
+      generation: null
+      name: 2.4.7
+  status:
+    dockerImageRepository: ""
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: baresip
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: livelace/sip2world-baresip:0.4.12
+      from:
+        kind: DockerImage
+        name: livelace/sip2world-baresip:0.4.12
+      generation: null
+      name: 0.4.12
+  status:
+    dockerImageRepository: ""
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: cdrstats3
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: livelace/sip2world-cdr-stats:3.0.0
+      from:
+        kind: DockerImage
+        name: livelace/sip2world-cdr-stats:3.0.0
+      generation: null
+      name: 3.0.0
+  status:
+    dockerImageRepository: ""
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: cdrstats3djcelery
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: livelace/sip2world-cdr-stats-djcelery:3.0.0
+      from:
+        kind: DockerImage
+        name: livelace/sip2world-cdr-stats-djcelery:3.0.0
+      generation: null
+      name: 3.0.0
+  status:
+    dockerImageRepository: ""
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: cdrstats3djcelerybeat
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: livelace/sip2world-cdr-stats-djcelerybeat:3.0.0
+      from:
+        kind: DockerImage
+        name: livelace/sip2world-cdr-stats-djcelerybeat:3.0.0
+      generation: null
+      name: 3.0.0
+  status:
+    dockerImageRepository: ""
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: cdrstats3pusher
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: livelace/sip2world-cdr-stats-pusher:3.0.0
+      from:
+        kind: DockerImage
+        name: livelace/sip2world-cdr-stats-pusher:3.0.0
+      generation: null
+      name: 3.0.0
+  status:
+    dockerImageRepository: ""
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: freeswitch
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: livelace/sip2world-freeswitch:1.4.18
+      from:
+        kind: DockerImage
+        name: livelace/sip2world-freeswitch:1.4.18
+      generation: null
+      name: 1.4.18
+  status:
+    dockerImageRepository: ""
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: postgresql
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: livelace/sip2world-postgresql:9.4
+      from:
+        kind: DockerImage
+        name: livelace/sip2world-postgresql:9.4
+      generation: null
+      name: "9.4"
+  status:
+    dockerImageRepository: ""
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: redis
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: redis
+      from:
+        kind: DockerImage
+        name: redis:latest
+      generation: null
+      name: latest
+  status:
+    dockerImageRepository: ""
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: memcached
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: memcached
+      from:
+        kind: DockerImage
+        name: memcached:latest
+      generation: null
+      name: latest
+  status:
+    dockerImageRepository: ""
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: sip2world
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: sip2world
+    template:
+      metadata:
+        labels:
+          deploymentconfig: sip2world
+          name: sip2world
+      spec:
+        containers:
+
+        - image: livelace/sip2world-apache:2.4.7
+          name: apache
+          ports:
+            - containerPort: 80
+          volumeMounts:
+          - mountPath: /var/www/html/fusionpbx
+            name: fusionpbx
+          - mountPath: /opt/freeswitch
+            name: freeswitch
+          securityContext:
+            privileged: true
+
+        - image: livelace/sip2world-baresip:0.4.12
+          name: baresip
+          securityContext:
+            privileged: true
+
+        - image: livelace/sip2world-cdr-stats:3.0.0
+          name: cdrstats3
+          ports:
+            - containerPort: 8000
+          securityContext:
+            privileged: true
+
+        - image: livelace/sip2world-cdr-stats-djcelery:3.0.0
+          name: cdrstats3djcelery
+          securityContext:
+            privileged: true
+
+        - image: livelace/sip2world-cdr-stats-djcelerybeat:3.0.0
+          name: cdrstats3djcelerybeat
+          securityContext:
+            privileged: true
+
+        - image: livelace/sip2world-cdr-stats-pusher:3.0.0
+          name: cdrstats3pusher
+          volumeMounts:
+          - mountPath: /opt/freeswitch/db
+            name: freeswitch-db
+          securityContext:
+            privileged: true
+
+        - image: livelace/sip2world-freeswitch:1.4.18
+          name: freeswitch
+          ports:
+            - containerPort: 5060 
+          volumeMounts:
+          - mountPath: /opt/freeswitch/conf
+            name: freeswitch-conf
+          - mountPath: /opt/freeswitch/db
+            name: freeswitch-db
+          - mountPath: /opt/freeswitch/recordings
+            name: freeswitch-recordings
+          - mountPath: /opt/freeswitch/scripts
+            name: freeswitch-scripts
+          - mountPath: /opt/freeswitch/storage
+            name: freeswitch-storage
+          - mountPath: /mod
+            name: freeswitch-mod
+          securityContext:
+            privileged: true
+
+        - image: livelace/sip2world-postgresql:9.4
+          name: postgresql
+          volumeMounts:
+          - mountPath: /var/lib/postgresql
+            name: postgresql
+          securityContext:
+            privileged: true
+
+        - image: memcached
+          name: memcached
+          securityContext:
+            privileged: true
+
+        - image: redis
+          name: redis
+          securityContext:
+            privileged: true
+
+        volumes:
+        - hostPath:
+            path: /share/sip2world/docker/data/freeswitch
+          name: freeswitch
+
+        - hostPath:
+            path: /share/sip2world/docker/data/freeswitch/conf
+          name: freeswitch-conf
+
+        - hostPath:
+            path: /share/sip2world/docker/data/freeswitch/db
+          name: freeswitch-db
+
+        - hostPath:
+            path: /share/sip2world/docker/data/freeswitch/mod
+          name: freeswitch-mod
+
+        - hostPath:
+            path: /share/sip2world/docker/data/freeswitch/recordings
+          name: freeswitch-recordings
+
+        - hostPath:
+            path: /share/sip2world/docker/data/freeswitch/scripts
+          name: freeswitch-scripts
+
+        - hostPath:
+            path: /share/sip2world/docker/data/freeswitch/storage
+          name: freeswitch-storage
+
+        - hostPath:
+            path: /share/sip2world/docker/data/fusionpbx
+          name: fusionpbx
+
+        - hostPath:
+            path: /share/sip2world/docker/data/postgresql
+          name: postgresql
+
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - apache
+        from:
+          kind: ImageStreamTag
+          name: apache:2.4.7
+      type: ImageChange
+
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - baresip
+        from:
+          kind: ImageStreamTag
+          name: baresip:0.4.12
+      type: ImageChange
+
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - cdrstats3
+        from:
+          kind: ImageStreamTag
+          name: cdrstats3:3.0.0
+      type: ImageChange
+
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - cdrstats3djcelery
+        from:
+          kind: ImageStreamTag
+          name: cdrstats3djcelery:3.0.0
+      type: ImageChange
+
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - cdrstats3djcelerybeat
+        from:
+          kind: ImageStreamTag
+          name: cdrstats3djcelerybeat:3.0.0
+      type: ImageChange
+
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - cdrstats3pusher
+        from:
+          kind: ImageStreamTag
+          name: cdrstats3pusher:3.0.0
+      type: ImageChange
+
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - freeswitch
+        from:
+          kind: ImageStreamTag
+          name: freeswitch:1.4.18
+      type: ImageChange
+
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - memcached
+        from:
+          kind: ImageStreamTag
+          name: memcached:1.4.24
+      type: ImageChange
+
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - postgresql
+        from:
+          kind: ImageStreamTag
+          name: postgresql:9.4
+      type: ImageChange
+
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - redis
+        from:
+          kind: ImageStreamTag
+          name: redis:3.0.5
+      type: ImageChange
+
+
