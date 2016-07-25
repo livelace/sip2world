@@ -16,7 +16,8 @@ For automated installation and configuration was created Ansible subproject whic
 * [Docker](https://www.docker.com/)
 * [Kubernetes](http://kubernetes.io/)
 * [Swarm](https://www.docker.com/products/docker-swarm)
-* [Vagrant](https://www.vagrantup.com/)
+* [Vagrant](https://www.vagrantup.com/)  
+* [Openshift](https://www.openshift.org/)
 
 
 ##### Quick start:
